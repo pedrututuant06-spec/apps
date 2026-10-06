@@ -1,10 +1,11 @@
-import { router, useFocusEffect } from 'expo-router';
+import { router, Stack, useFocusEffect } from 'expo-router';
 import { useCallback, useState } from 'react';
-import { FlatList, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
+import { FlatList, Platform, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import type { Cliente } from '../lib/cliente';
-import { listarClientes } from '../lib/db';
+import { confirmar } from '../lib/alerta';
+import { excluirClientes, listarClientes } from '../lib/db';
 import { TIPOS } from '../lib/options';
 import { cores, coresTipo } from '../lib/theme';
 
@@ -21,6 +22,11 @@ export default function ListaClientes() {
   const [busca, setBusca] = useState('');
   const [tipo, setTipo] = useState<string | undefined>();
   const [clientes, setClientes] = useState<Cliente[]>([]);
+  // null = modo normal; um Set = modo de seleção para excluir vários.
+  const [selecionados, setSelecionados] = useState<Set<number> | null>(null);
+  const selecionando = selecionados !== null;
+
+  const recarregar = useCallback(() => listarClientes(busca, tipo).then(setClientes), [busca, tipo]);
 
   useFocusEffect(
     useCallback(() => {
@@ -32,8 +38,37 @@ export default function ListaClientes() {
     }, [busca, tipo]),
   );
 
+  function alternar(id: number) {
+    setSelecionados((atual) => {
+      const novo = new Set(atual);
+      if (novo.has(id)) novo.delete(id);
+      else novo.add(id);
+      return novo;
+    });
+  }
+
+  function excluir(ids: number[], descricao: string) {
+    confirmar('Excluir cadastro', `Deseja excluir ${descricao}? Essa ação não pode ser desfeita.`, 'Excluir', async () => {
+      await excluirClientes(ids);
+      setSelecionados(null);
+      await recarregar();
+    });
+  }
+
+  const todosSelecionados = selecionando && clientes.length > 0 && clientes.every((c) => selecionados.has(c.id));
+
   return (
     <View style={styles.tela}>
+      <Stack.Screen
+        options={{
+          headerRight: () =>
+            clientes.length > 0 || selecionando ? (
+              <Pressable onPress={() => setSelecionados(selecionando ? null : new Set())} hitSlop={10} style={styles.headerBotao}>
+                <Text style={styles.headerTexto}>{selecionando ? 'Cancelar' : 'Selecionar'}</Text>
+              </Pressable>
+            ) : null,
+        }}
+      />
       <View style={styles.topo}>
         <View style={styles.buscaWrap}>
           <Text style={styles.buscaIcone}>⌕</Text>
@@ -69,9 +104,21 @@ export default function ListaClientes() {
         contentContainerStyle={[styles.conteudo, { paddingBottom: insets.bottom + 96 }]}
         ListHeaderComponent={
           clientes.length > 0 ? (
-            <Text style={styles.contagem}>
-              {clientes.length} {clientes.length === 1 ? 'cadastro' : 'cadastros'}
-            </Text>
+            <View style={styles.cabecalhoLista}>
+              <Text style={styles.contagem}>
+                {selecionando
+                  ? `${selecionados.size} de ${clientes.length} selecionados`
+                  : `${clientes.length} ${clientes.length === 1 ? 'cadastro' : 'cadastros'}`}
+              </Text>
+              {selecionando && (
+                <Pressable
+                  onPress={() => setSelecionados(todosSelecionados ? new Set() : new Set(clientes.map((c) => c.id)))}
+                  hitSlop={8}
+                >
+                  <Text style={styles.selecionarTodos}>{todosSelecionados ? 'Desmarcar todos' : 'Selecionar todos'}</Text>
+                </Pressable>
+              )}
+            </View>
           ) : null
         }
         ListEmptyComponent={
@@ -86,14 +133,22 @@ export default function ListaClientes() {
           const cor = coresTipo[item.tipo] ?? coresTipo.Outro;
           const contato = item.celular || item.telefone || item.email;
           const local = [item.cidade, item.uf].filter(Boolean).join(' / ');
+          const marcado = selecionando && selecionados.has(item.id);
           return (
             <Pressable
-              onPress={() => router.push(`/cliente/${item.id}`)}
-              style={({ pressed }) => [styles.cartao, pressed && { opacity: 0.75 }]}
+              onPress={() => (selecionando ? alternar(item.id) : router.push(`/cliente/${item.id}`))}
+              onLongPress={() => !selecionando && setSelecionados(new Set([item.id]))}
+              style={({ pressed }) => [styles.cartao, marcado && styles.cartaoMarcado, pressed && { opacity: 0.75 }]}
             >
-              <View style={[styles.avatar, { backgroundColor: cores.primaria }]}>
-                <Text style={styles.avatarTexto}>{iniciais(item.nome)}</Text>
-              </View>
+              {selecionando ? (
+                <View style={[styles.caixa, marcado && styles.caixaMarcada]}>
+                  {marcado && <Text style={styles.caixaCheck}>✓</Text>}
+                </View>
+              ) : (
+                <View style={[styles.avatar, { backgroundColor: cores.primaria }]}>
+                  <Text style={styles.avatarTexto}>{iniciais(item.nome)}</Text>
+                </View>
+              )}
               <View style={{ flex: 1 }}>
                 <Text style={styles.nome} numberOfLines={1}>
                   {item.tratamento ? `${item.tratamento} ` : ''}
@@ -114,19 +169,53 @@ export default function ListaClientes() {
                 )}
                 {!!item.grupo && <Text style={styles.grupo}>{item.grupo}</Text>}
               </View>
+              {!selecionando && (
+                <Pressable
+                  accessibilityRole="button"
+                  accessibilityLabel={`Excluir ${item.nome}`}
+                  onPress={() => excluir([item.id], `“${item.nome}”`)}
+                  hitSlop={8}
+                  style={({ pressed }) => [styles.lixeira, pressed && { backgroundColor: '#FDECEA' }]}
+                >
+                  <Text style={styles.lixeiraIcone}>🗑</Text>
+                </Pressable>
+              )}
             </Pressable>
           );
         }}
       />
 
-      <Pressable
-        accessibilityRole="button"
-        accessibilityLabel="Novo cadastro"
-        onPress={() => router.push('/cliente/novo')}
-        style={({ pressed }) => [styles.fab, { bottom: insets.bottom + 20 }, pressed && { opacity: 0.85 }]}
-      >
-        <Text style={styles.fabTexto}>+ Novo</Text>
-      </Pressable>
+      {selecionando ? (
+        <View style={[styles.barraExcluir, { paddingBottom: insets.bottom + 12 }]}>
+          <Pressable
+            disabled={selecionados.size === 0}
+            onPress={() =>
+              excluir(
+                [...selecionados],
+                selecionados.size === 1 ? '1 cadastro' : `${selecionados.size} cadastros`,
+              )
+            }
+            style={({ pressed }) => [
+              styles.botaoExcluir,
+              selecionados.size === 0 && { opacity: 0.4 },
+              pressed && { opacity: 0.8 },
+            ]}
+          >
+            <Text style={styles.botaoExcluirTexto}>
+              {selecionados.size === 0 ? 'Toque nos cadastros para selecionar' : `Excluir ${selecionados.size} selecionado${selecionados.size > 1 ? 's' : ''}`}
+            </Text>
+          </Pressable>
+        </View>
+      ) : (
+        <Pressable
+          accessibilityRole="button"
+          accessibilityLabel="Novo cadastro"
+          onPress={() => router.push('/cliente/novo')}
+          style={({ pressed }) => [styles.fab, { bottom: insets.bottom + 20 }, pressed && { opacity: 0.85 }]}
+        >
+          <Text style={styles.fabTexto}>+ Novo</Text>
+        </Pressable>
+      )}
     </View>
   );
 }
@@ -155,7 +244,47 @@ const styles = StyleSheet.create({
   chipAtivo: { backgroundColor: cores.destaque, borderColor: cores.destaque },
   chipTexto: { color: '#E6E9F0', fontSize: 13, fontWeight: '600' },
   chipTextoAtivo: { color: '#FFFFFF' },
-  contagem: { color: cores.textoSuave, fontSize: 12, marginBottom: 8, fontWeight: '600' },
+  contagem: { color: cores.textoSuave, fontSize: 12, fontWeight: '600' },
+  cabecalhoLista: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 },
+  selecionarTodos: { color: cores.primariaClara, fontSize: 13, fontWeight: '700' },
+  headerBotao: { paddingHorizontal: Platform.OS === 'web' ? 16 : 0 },
+  headerTexto: { color: cores.destaque, fontWeight: '800', fontSize: 16 },
+  cartaoMarcado: { borderColor: cores.perigo, backgroundColor: '#FFF6F5' },
+  caixa: {
+    width: 26,
+    height: 26,
+    borderRadius: 13,
+    borderWidth: 2,
+    borderColor: cores.borda,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginHorizontal: 9,
+  },
+  caixaMarcada: { backgroundColor: cores.perigo, borderColor: cores.perigo },
+  caixaCheck: { color: '#FFFFFF', fontWeight: '800', fontSize: 14 },
+  lixeira: { padding: 8, borderRadius: 18 },
+  lixeiraIcone: { fontSize: 18 },
+  barraExcluir: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    bottom: 0,
+    paddingHorizontal: 14,
+    paddingTop: 12,
+    backgroundColor: cores.superficie,
+    borderTopWidth: StyleSheet.hairlineWidth,
+    borderTopColor: cores.borda,
+  },
+  botaoExcluir: {
+    backgroundColor: cores.perigo,
+    borderRadius: 10,
+    paddingVertical: 15,
+    alignItems: 'center',
+    width: '100%',
+    maxWidth: 760,
+    alignSelf: 'center',
+  },
+  botaoExcluirTexto: { color: '#FFFFFF', fontWeight: '800', fontSize: 16 },
   cartao: {
     flexDirection: 'row',
     alignItems: 'center',

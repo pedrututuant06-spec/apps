@@ -68,3 +68,9 @@ export async function excluirCliente(id: number) {
   const db = await abrir();
   await db.runAsync('DELETE FROM clientes WHERE id = ?', [id]);
 }
+
+export async function excluirClientes(ids: number[]) {
+  if (ids.length === 0) return;
+  const db = await abrir();
+  await db.runAsync(`DELETE FROM clientes WHERE id IN (${ids.map(() => '?').join(', ')})`, ids);
+}

@@ -50,3 +50,8 @@ export async function salvarCliente(dados: ClienteDados, id?: number) {
 export async function excluirCliente(id: number) {
   gravar(ler().filter((c) => c.id !== id));
 }
+
+export async function excluirClientes(ids: number[]) {
+  const remover = new Set(ids);
+  gravar(ler().filter((c) => !remover.has(c.id)));
+}
