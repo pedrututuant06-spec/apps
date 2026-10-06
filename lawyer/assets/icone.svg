@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024">
+  <!-- Fonte do ícone do app. Os PNGs em assets/ são gerados a partir deste arquivo. -->
+  <defs>
+    <linearGradient id="fundo" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#2E3D63"/>
+      <stop offset="1" stop-color="#1A2338"/>
+    </linearGradient>
+    <linearGradient id="terno" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#2A2F3B"/>
+      <stop offset="1" stop-color="#151922"/>
+    </linearGradient>
+    <clipPath id="quadro"><rect width="1024" height="1024"/></clipPath>
+  </defs>
+
+  <g id="fundo-layer">
+    <rect width="1024" height="1024" fill="url(#fundo)"/>
+    <circle cx="512" cy="540" r="400" fill="none" stroke="#B08D57" stroke-opacity="0.7" stroke-width="10"/>
+  </g>
+
+  <g id="advogado" clip-path="url(#quadro)">
+    <!-- paletó -->
+    <path d="M150 1024 C150 830 270 735 420 712 L512 700 L604 712 C754 735 874 830 874 1024 Z" fill="url(#terno)"/>
+    <!-- pescoço -->
+    <path d="M455 590 L569 590 L575 735 L449 735 Z" fill="#D49F7D"/>
+    <!-- camisa -->
+    <path d="M418 712 L512 905 L606 712 L569 700 L512 760 L455 700 Z" fill="#F4F5F7"/>
+    <!-- gravata -->
+    <path d="M488 752 L536 752 L528 800 L496 800 Z" fill="#9C7646"/>
+    <path d="M496 800 L528 800 L556 935 L512 990 L468 935 Z" fill="#B08D57"/>
+    <!-- lapelas -->
+    <path d="M418 712 L512 905 L470 1024 L430 1024 L455 900 L372 770 Z" fill="#323846"/>
+    <path d="M606 712 L512 905 L554 1024 L594 1024 L569 900 L652 770 Z" fill="#323846"/>
+    <!-- lenço no bolso -->
+    <path d="M690 905 L760 890 L762 912 L692 925 Z" fill="#B08D57"/>
+    <!-- orelhas -->
+    <ellipse cx="368" cy="470" rx="30" ry="48" fill="#D49F7D"/>
+    <ellipse cx="656" cy="470" rx="30" ry="48" fill="#D49F7D"/>
+    <!-- rosto -->
+    <ellipse cx="512" cy="455" rx="146" ry="170" fill="#E8B896"/>
+    <!-- cabelo -->
+    <path d="M362 470 C340 330 420 268 520 268 C630 268 690 335 664 470 C652 420 630 392 592 378 C540 400 450 400 410 372 C385 395 368 425 362 470 Z" fill="#33251C"/>
+  </g>
+</svg>
