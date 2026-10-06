@@ -3,7 +3,7 @@ name: Publicar lawyer (web)
 on:
   push:
     branches: [main, claude/lawyer-client-registration-app-4frzl1]
-    paths: ['lawyer/**', '.github/workflows/lawyer-web.yml']
+    paths: ['lawyer/**', 'pedropixel/**', '.github/workflows/lawyer-web.yml']
   workflow_dispatch:
 
 permissions:
@@ -43,6 +43,8 @@ jobs:
             dist/index.html
           # GitHub Pages devolve 404.html para links diretos (ex.: /apps/cliente/3); o app resolve a rota.
           cp dist/index.html dist/404.html
+          # Página de links da bio (Pedropixel): https://pedrututuant06-spec.github.io/apps/links/
+          cp -r ../pedropixel dist/links
           # Sem isso o GitHub Pages ignora a pasta _expo.
           touch dist/.nojekyll
 

@@ -2,6 +2,7 @@ import { useState, type ReactNode } from 'react';
 import {
   FlatList,
   Modal,
+  Platform,
   Pressable,
   StyleSheet,
   Text,
@@ -203,7 +204,17 @@ const styles = StyleSheet.create({
   },
   entradaFoco: { borderColor: cores.primariaClara, backgroundColor: cores.superficie },
   entradaErro: { borderColor: cores.erro },
-  entrada: { flex: 1, paddingHorizontal: 10, paddingVertical: 10, fontSize: 15, color: cores.texto },
+  entrada: {
+    flex: 1,
+    // Sem isto, no navegador o <input> tem largura mínima própria e empurra o formulário para o lado.
+    minWidth: 0,
+    paddingHorizontal: 10,
+    paddingVertical: 10,
+    fontSize: 15,
+    color: cores.texto,
+    // A borda do campo já indica o foco; tira o contorno preto do navegador.
+    ...(Platform.OS === 'web' ? ({ outlineStyle: 'none' } as object) : {}),
+  },
   entradaMultilinha: { minHeight: 90, textAlignVertical: 'top' },
   selecaoTexto: { paddingVertical: 12 },
   seta: { paddingRight: 10, color: cores.textoSuave, fontSize: 14 },

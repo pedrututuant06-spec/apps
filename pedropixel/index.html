@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pedropixel</title>
+<meta name="description" content="Apps, jogos e mods de Minecraft do Pedropixel.">
+<meta property="og:title" content="Pedropixel">
+<meta property="og:description" content="Apps, jogos e mods de Minecraft.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --fundo: #0F1220; --cartao: #1A1F33; --cartao-hover: #232A44; --borda: #2C3452; --texto: #EEF1F8; --suave: #9AA3BC;
+    --verde: #5BD66B; --roxo: #8E7CFF; --ouro: #F2B84B; --vermelho: #FF5A5F;
+  }
+  :root[data-theme="light"] { --fundo: #F4F5FA; --cartao: #FFFFFF; --cartao-hover: #EEF0F7; --borda: #DADFEA; --texto: #161A28; --suave: #5D6680; }
+  @media (prefers-color-scheme: light) {
+    :root:not([data-theme="dark"]) { --fundo: #F4F5FA; --cartao: #FFFFFF; --cartao-hover: #EEF0F7; --borda: #DADFEA; --texto: #161A28; --suave: #5D6680; }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--fundo); color: var(--texto); font-family: Inter, system-ui, sans-serif;
+    background-image: linear-gradient(var(--borda) 1px, transparent 1px), linear-gradient(90deg, var(--borda) 1px, transparent 1px);
+    background-size: 32px 32px; background-attachment: fixed; }
+  main { max-width: 560px; margin: 0 auto; padding: 40px 16px 64px; }
+  header { text-align: center; margin-bottom: 28px; }
+  .logo { width: 104px; height: 104px; margin: 0 auto 16px; image-rendering: pixelated; filter: drop-shadow(0 8px 20px rgba(0,0,0,.35)); }
+  h1 { font-family: "Press Start 2P", monospace; font-size: 24px; margin: 0 0 12px; letter-spacing: 1px; }
+  .bio { color: var(--suave); margin: 0; font-size: 15px; }
+  h2 { font-family: "Press Start 2P", monospace; font-size: 12px; margin: 30px 4px 12px; display: flex; align-items: center; gap: 10px; }
+  h2 .px { width: 12px; height: 12px; display: inline-block; }
+  a.item, div.item { display: flex; align-items: center; gap: 14px; padding: 14px 16px; margin-bottom: 10px; border-radius: 12px;
+    background: var(--cartao); border: 1px solid var(--borda); color: inherit; text-decoration: none; transition: background .15s, transform .15s; }
+  a.item:hover { background: var(--cartao-hover); transform: translateY(-2px); }
+  a.item:focus-visible { outline: 3px solid var(--roxo); outline-offset: 2px; }
+  .item img, .item .icone { width: 48px; height: 48px; border-radius: 11px; flex: none; display: grid; place-items: center; font-size: 24px; }
+  .item b { display: block; font-size: 16px; }
+  .item small { color: var(--suave); font-size: 13px; }
+  .item .seta { margin-left: auto; color: var(--suave); font-size: 18px; }
+  .breve { opacity: .65; }
+  .selo { margin-left: auto; font-size: 11px; font-weight: 800; padding: 4px 8px; border-radius: 6px; background: var(--borda); color: var(--suave); white-space: nowrap; }
+  footer { text-align: center; color: var(--suave); font-size: 12px; margin-top: 36px; }
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <!-- Logo em pixel art: um "P" -->
+    <svg class="logo" viewBox="0 0 13 13" xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges" aria-hidden="true">
+      <rect width="13" height="13" rx="2" fill="#8E7CFF"/>
+      <rect x="1" y="1" width="11" height="11" fill="#6B57F0"/>
+      <g fill="#FFFFFF"><rect x="3" y="2" width="2" height="9"/><rect x="3" y="2" width="6" height="2"/><rect x="8" y="3" width="2" height="4"/><rect x="3" y="6" width="6" height="2"/></g>
+      <rect x="10" y="10" width="1" height="1" fill="#5BD66B"/><rect x="2" y="10" width="1" height="1" fill="#F2B84B"/>
+    </svg>
+    <h1>Pedropixel</h1>
+    <p class="bio">Apps, jogos e mods de Minecraft 🎮</p>
+  </header>
+
+  <!-- Para adicionar um link novo, copie um bloco <a class="item"> na seção certa. -->
+
+  <h2><span class="px" style="background:var(--vermelho)"></span>Canal</h2>
+  <a class="item" href="https://www.youtube.com/@Pedropixel" target="_blank" rel="noopener">
+    <span class="icone" style="background:#FF0000;color:#fff">▶</span>
+    <span><b>YouTube</b><small>@Pedropixel</small></span><span class="seta">›</span>
+  </a>
+
+  <h2><span class="px" style="background:var(--ouro)"></span>Apps</h2>
+  <a class="item" href="https://pedrututuant06-spec.github.io/apps/" target="_blank" rel="noopener">
+    <img src="../icon-512.png" alt="">
+    <span><b>lawyer</b><small>Cadastro de clientes para advocacia — grátis no navegador</small></span><span class="seta">›</span>
+  </a>
+
+  <h2><span class="px" style="background:var(--roxo)"></span>Jogos</h2>
+  <div class="item breve">
+    <span class="icone" style="background:var(--borda)">🕹️</span>
+    <span><b>Em breve</b><small>Os jogos vão aparecer aqui</small></span><span class="selo">EM BREVE</span>
+  </div>
+
+  <h2><span class="px" style="background:var(--verde)"></span>Mods de Minecraft</h2>
+  <div class="item breve">
+    <span class="icone" style="background:var(--borda)">⛏️</span>
+    <span><b>Em breve</b><small>Os mods vão aparecer aqui</small></span><span class="selo">EM BREVE</span>
+  </div>
+
+  <footer>Pedropixel</footer>
+</main>
+</body>
+</html>
