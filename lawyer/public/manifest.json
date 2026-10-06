@@ -8,6 +8,6 @@
   "theme_color": "#1F2A44",
   "icons": [
     { "src": "/apps/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
-    { "src": "/apps/apple-touch-icon.png", "sizes": "180x180", "type": "image/png" }
+    { "src": "/apps/icone-ios-180.png", "sizes": "180x180", "type": "image/png" }
   ]
 }
