@@ -8,7 +8,13 @@
     "userInterfaceStyle": "light",
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.lawyer.app"
+      "bundleIdentifier": "com.pedrututuant.lawyer",
+      "config": {
+        "usesNonExemptEncryption": false
+      },
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false
+      }
     },
     "android": {
       "adaptiveIcon": {
@@ -18,7 +24,7 @@
         "monochromeImage": "./assets/android-icon-monochrome.png"
       },
       "predictiveBackGestureEnabled": false,
-      "package": "com.lawyer.app"
+      "package": "com.pedrututuant.lawyer"
     },
     "web": {
       "favicon": "./assets/favicon.png",
@@ -33,8 +39,8 @@
       "expo-sqlite"
     ],
     "scheme": "lawyer",
-    "experiments": {
-      "baseUrl": "/apps"
+    "runtimeVersion": {
+      "policy": "appVersion"
     }
   }
 }

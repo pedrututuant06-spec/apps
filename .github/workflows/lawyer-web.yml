@@ -33,11 +33,13 @@ jobs:
       - run: npx tsc --noEmit
 
       - name: Gerar site
+        env:
+          EXPO_WEB_BASE_URL: /apps
         run: |
           npx expo export --platform web --output-dir dist
           # Ícone e manifesto para "Adicionar à Tela de Início" (iPhone e Android).
           sed -i -e 's#<html lang="en">#<html lang="pt-BR">#' \
-            -e 's#</head>#<link rel="apple-touch-icon" href="/apps/apple-touch-icon.png"/><link rel="manifest" href="/apps/manifest.json"/><meta name="apple-mobile-web-app-title" content="lawyer"/></head>#' \
+            -e 's#</head>#<link rel="apple-touch-icon" href="/apps/apple-touch-icon.png?v=2"/><link rel="manifest" href="/apps/manifest.json?v=2"/><meta name="apple-mobile-web-app-title" content="lawyer"/></head>#' \
             dist/index.html
           # GitHub Pages devolve 404.html para links diretos (ex.: /apps/cliente/3); o app resolve a rota.
           cp dist/index.html dist/404.html

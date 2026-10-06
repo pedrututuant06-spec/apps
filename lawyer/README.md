@@ -36,12 +36,15 @@ Cada push em `lawyer/` gera o site automaticamente (`.github/workflows/lawyer-we
 No navegador os cadastros ficam salvos **no próprio navegador** (localStorage): cada computador/navegador tem
 os seus dados, e limpar os dados do navegador apaga os cadastros.
 
-## Gerar o app para instalar / publicar
+## App Store e Play Store
 
-```bash
-npx eas-cli@latest build --platform android   # .aab / .apk
-npx eas-cli@latest build --platform ios       # requer conta Apple Developer
-```
+Veja **[LOJAS.md](LOJAS.md)**. Ali estão as contas necessárias, a primeira publicação (`scripts/publicar-nas-lojas.sh`)
+e as atualizações automáticas pelo EAS Update. Os textos e as imagens das lojas ficam em `loja/`.
 
-Para trocar o nome do app depois, altere `name`, `slug`, `scheme`, `ios.bundleIdentifier` e
-`android.package` em `app.json`, e o título da tela inicial em `src/app/_layout.tsx`.
+## Trocar o nome do app
+
+Altere `name` em `app.json` e o título da tela inicial em `src/app/_layout.tsx`. O nome aparece no celular depois de
+uma nova versão nas lojas. **Não altere** `ios.bundleIdentifier`, `android.package` nem `slug` depois de publicar:
+as lojas tratariam como outro app.
+
+O ícone é gerado a partir de `assets/icone.svg`.

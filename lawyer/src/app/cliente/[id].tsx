@@ -132,7 +132,7 @@ export default function CadastroCliente() {
         options={{
           title: novo ? 'Novo cadastro' : 'Editar cadastro',
           headerRight: () => (
-            <Pressable onPress={salvar} disabled={salvando} hitSlop={10}>
+            <Pressable onPress={salvar} disabled={salvando} hitSlop={10} style={styles.headerBotao}>
               <Text style={styles.headerSalvar}>Salvar</Text>
             </Pressable>
           ),
@@ -295,6 +295,8 @@ const styles = StyleSheet.create({
   // Em telas largas (navegador no computador) o formulário fica centralizado.
   conteudo: { padding: 14, width: '100%', maxWidth: 760, alignSelf: 'center' },
   centro: { flex: 1, alignItems: 'center', justifyContent: 'center' },
+  // No navegador o cabeçalho não tem margem lateral própria.
+  headerBotao: { paddingHorizontal: Platform.OS === 'web' ? 16 : 0 },
   headerSalvar: { color: cores.destaque, fontWeight: '800', fontSize: 16 },
   botaoSalvar: {
     backgroundColor: cores.primaria,

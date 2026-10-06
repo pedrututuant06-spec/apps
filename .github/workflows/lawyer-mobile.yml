@@ -1,0 +1,77 @@
+name: lawyer (iPhone e Android)
+
+# Atualização automática: a cada alteração em lawyer/, publica uma atualização (EAS Update) que os
+# apps já instalados pela App Store / Play Store baixam sozinhos na próxima vez que forem abertos.
+#
+# Nova versão nas lojas: só é necessária quando muda algo nativo (biblioteca nativa nova, ícone,
+# permissões, nome do app). Nesse caso aumente "version" em lawyer/app.json e rode este workflow
+# manualmente (aba Actions → "lawyer (iPhone e Android)" → Run workflow → marque "loja").
+#
+# Requer o segredo EXPO_TOKEN (Settings → Secrets and variables → Actions). Sem ele nada é feito.
+
+on:
+  push:
+    branches: [main, claude/lawyer-client-registration-app-4frzl1]
+    paths: ['lawyer/**', '!lawyer/loja/**', '!lawyer/public/**', '.github/workflows/lawyer-mobile.yml']
+  workflow_dispatch:
+    inputs:
+      loja:
+        description: 'Gerar nova versão e enviar para App Store e Play Store'
+        type: boolean
+        default: false
+
+concurrency:
+  group: lawyer-mobile
+  cancel-in-progress: false
+
+jobs:
+  publicar:
+    runs-on: ubuntu-latest
+    env:
+      EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+    defaults:
+      run:
+        working-directory: lawyer
+    steps:
+      - name: Verificar EXPO_TOKEN
+        if: env.EXPO_TOKEN == ''
+        working-directory: .
+        run: echo "::notice::Segredo EXPO_TOKEN não configurado; nada foi publicado. Veja lawyer/LOJAS.md."
+
+      - uses: actions/checkout@v4
+        if: env.EXPO_TOKEN != ''
+
+      - uses: actions/setup-node@v4
+        if: env.EXPO_TOKEN != ''
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: lawyer/package-lock.json
+
+      - uses: expo/expo-github-action@v8
+        if: env.EXPO_TOKEN != ''
+        with:
+          eas-version: latest
+          token: ${{ secrets.EXPO_TOKEN }}
+
+      - if: env.EXPO_TOKEN != ''
+        run: npm ci
+
+      - if: env.EXPO_TOKEN != ''
+        run: npx tsc --noEmit
+
+      - name: Vincular ao projeto no Expo
+        if: env.EXPO_TOKEN != ''
+        run: |
+          eas init --non-interactive --force
+          eas update:configure --non-interactive
+
+      - name: Publicar atualização
+        if: env.EXPO_TOKEN != '' && !inputs.loja
+        run: eas update --channel production --environment production --non-interactive --message "$MENSAGEM"
+        env:
+          MENSAGEM: ${{ github.event.head_commit.message || 'Atualização manual' }}
+
+      - name: Gerar versão e enviar para as lojas
+        if: env.EXPO_TOKEN != '' && inputs.loja
+        run: eas build --platform all --profile production --auto-submit --non-interactive --no-wait
