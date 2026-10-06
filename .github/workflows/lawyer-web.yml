@@ -1,0 +1,49 @@
+name: Publicar lawyer (web)
+
+on:
+  push:
+    branches: [main, claude/lawyer-client-registration-app-4frzl1]
+    paths: ['lawyer/**', '.github/workflows/lawyer-web.yml']
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: lawyer-web
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: lawyer
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: lawyer/package-lock.json
+
+      - run: npm ci
+
+      - run: npx tsc --noEmit
+
+      - name: Gerar site
+        run: |
+          npx expo export --platform web --output-dir dist
+          # GitHub Pages devolve 404.html para links diretos (ex.: /apps/cliente/3); o app resolve a rota.
+          cp dist/index.html dist/404.html
+          # Sem isso o GitHub Pages ignora a pasta _expo.
+          touch dist/.nojekyll
+
+      - name: Publicar no branch gh-pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: lawyer/dist
+          publish_branch: gh-pages
+          force_orphan: true

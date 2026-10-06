@@ -26,6 +26,16 @@ npx expo start
 
 Escaneie o QR code com o app **Expo Go** (iPhone: câmera; Android/Samsung: app Expo Go).
 
+## Versão web
+
+Endereço: **https://pedrututuant06-spec.github.io/apps/**
+
+Cada push em `lawyer/` gera o site automaticamente (`.github/workflows/lawyer-web.yml`) e publica no branch
+`gh-pages`. Na primeira vez é preciso ativar em GitHub → Settings → Pages → Branch: `gh-pages` / `(root)` → Save.
+
+No navegador os cadastros ficam salvos **no próprio navegador** (localStorage): cada computador/navegador tem
+os seus dados, e limpar os dados do navegador apaga os cadastros.
+
 ## Gerar o app para instalar / publicar
 
 ```bash

@@ -1,42 +1,15 @@
-import type { SQLiteDatabase } from 'expo-sqlite';
+// Armazenamento no celular (iOS/Android): SQLite. A versão web fica em db.web.ts.
+import { openDatabaseAsync, type SQLiteDatabase } from 'expo-sqlite';
 
-export const CAMPOS = [
-  'nome',
-  'tratamento',
-  'tipo',
-  'grupo',
-  'cpf',
-  'rg',
-  'orgao',
-  'data_nascimento',
-  'telefone',
-  'telefone_comercial',
-  'celular',
-  'fax',
-  'email',
-  'local_trabalho',
-  'profissao',
-  'nacionalidade',
-  'estado_civil',
-  'qualificacao',
-  'cep',
-  'endereco',
-  'bairro',
-  'cidade',
-  'uf',
-  'anotacoes',
-] as const;
+import { CAMPOS, type Cliente, type ClienteDados } from './cliente';
 
-export type Campo = (typeof CAMPOS)[number];
-export type ClienteDados = Record<Campo, string>;
-export type Cliente = ClienteDados & { id: number; criado_em: string; atualizado_em: string };
+let conexao: Promise<SQLiteDatabase> | undefined;
 
-export const clienteVazio = (): ClienteDados =>
-  Object.fromEntries(CAMPOS.map((c) => [c, ''])) as ClienteDados;
-
-export async function migrate(db: SQLiteDatabase) {
-  const colunas = CAMPOS.map((c) => `${c} TEXT NOT NULL DEFAULT ''`).join(',\n  ');
-  await db.execAsync(`
+function abrir() {
+  conexao ??= (async () => {
+    const db = await openDatabaseAsync('lawyer.db');
+    const colunas = CAMPOS.map((c) => `${c} TEXT NOT NULL DEFAULT ''`).join(',\n  ');
+    await db.execAsync(`
 PRAGMA journal_mode = WAL;
 CREATE TABLE IF NOT EXISTS clientes (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -46,9 +19,13 @@ CREATE TABLE IF NOT EXISTS clientes (
 );
 CREATE INDEX IF NOT EXISTS idx_clientes_nome ON clientes (nome COLLATE NOCASE);
 `);
+    return db;
+  })();
+  return conexao;
 }
 
-export async function listarClientes(db: SQLiteDatabase, busca: string, tipo?: string) {
+export async function listarClientes(busca: string, tipo?: string) {
+  const db = await abrir();
   const termo = `%${busca.trim()}%`;
   const digitos = busca.replace(/\D/g, '');
   const params: string[] = [termo, termo, termo];
@@ -67,11 +44,13 @@ export async function listarClientes(db: SQLiteDatabase, busca: string, tipo?: s
   return db.getAllAsync<Cliente>(`SELECT * FROM clientes WHERE ${where} ORDER BY nome COLLATE NOCASE`, params);
 }
 
-export function buscarCliente(db: SQLiteDatabase, id: number) {
+export async function buscarCliente(id: number) {
+  const db = await abrir();
   return db.getFirstAsync<Cliente>('SELECT * FROM clientes WHERE id = ?', [id]);
 }
 
-export async function salvarCliente(db: SQLiteDatabase, dados: ClienteDados, id?: number) {
+export async function salvarCliente(dados: ClienteDados, id?: number) {
+  const db = await abrir();
   const valores = CAMPOS.map((c) => dados[c].trim());
   if (id) {
     const sets = CAMPOS.map((c) => `${c} = ?`).join(', ');
@@ -85,6 +64,7 @@ export async function salvarCliente(db: SQLiteDatabase, dados: ClienteDados, id?
   return res.lastInsertRowId;
 }
 
-export async function excluirCliente(db: SQLiteDatabase, id: number) {
+export async function excluirCliente(id: number) {
+  const db = await abrir();
   await db.runAsync('DELETE FROM clientes WHERE id = ?', [id]);
 }

@@ -1,10 +1,10 @@
 import { router, useFocusEffect } from 'expo-router';
-import { useSQLiteContext } from 'expo-sqlite';
 import { useCallback, useState } from 'react';
 import { FlatList, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { listarClientes, type Cliente } from '../lib/db';
+import type { Cliente } from '../lib/cliente';
+import { listarClientes } from '../lib/db';
 import { TIPOS } from '../lib/options';
 import { cores, coresTipo } from '../lib/theme';
 
@@ -17,7 +17,6 @@ function iniciais(nome: string) {
 }
 
 export default function ListaClientes() {
-  const db = useSQLiteContext();
   const insets = useSafeAreaInsets();
   const [busca, setBusca] = useState('');
   const [tipo, setTipo] = useState<string | undefined>();
@@ -26,11 +25,11 @@ export default function ListaClientes() {
   useFocusEffect(
     useCallback(() => {
       let ativo = true;
-      listarClientes(db, busca, tipo).then((r) => ativo && setClientes(r));
+      listarClientes(busca, tipo).then((r) => ativo && setClientes(r));
       return () => {
         ativo = false;
       };
-    }, [db, busca, tipo]),
+    }, [busca, tipo]),
   );
 
   return (
@@ -67,7 +66,7 @@ export default function ListaClientes() {
       <FlatList
         data={clientes}
         keyExtractor={(c) => String(c.id)}
-        contentContainerStyle={{ padding: 14, paddingBottom: insets.bottom + 96 }}
+        contentContainerStyle={[styles.conteudo, { paddingBottom: insets.bottom + 96 }]}
         ListHeaderComponent={
           clientes.length > 0 ? (
             <Text style={styles.contagem}>
@@ -135,6 +134,7 @@ export default function ListaClientes() {
 const styles = StyleSheet.create({
   tela: { flex: 1, backgroundColor: cores.fundo },
   topo: { backgroundColor: cores.primaria, paddingHorizontal: 14, paddingBottom: 12 },
+  conteudo: { padding: 14, width: '100%', maxWidth: 760, alignSelf: 'center' },
   buscaWrap: {
     flexDirection: 'row',
     alignItems: 'center',

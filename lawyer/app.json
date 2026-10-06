@@ -21,12 +21,20 @@
       "package": "com.lawyer.app"
     },
     "web": {
-      "favicon": "./assets/favicon.png"
+      "favicon": "./assets/favicon.png",
+      "output": "single",
+      "name": "lawyer",
+      "shortName": "lawyer",
+      "themeColor": "#1F2A44",
+      "backgroundColor": "#F3F4F7"
     },
     "plugins": [
       "expo-router",
       "expo-sqlite"
     ],
-    "scheme": "lawyer"
+    "scheme": "lawyer",
+    "experiments": {
+      "baseUrl": "/apps"
+    }
   }
 }

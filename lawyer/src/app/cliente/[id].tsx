@@ -1,9 +1,7 @@
 import { router, Stack, useLocalSearchParams } from 'expo-router';
-import { useSQLiteContext } from 'expo-sqlite';
 import { useEffect, useRef, useState } from 'react';
 import {
   ActivityIndicator,
-  Alert,
   KeyboardAvoidingView,
   Platform,
   Pressable,
@@ -15,10 +13,15 @@ import {
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { CampoSelecao, CampoTexto, Linha, Secao } from '../../components/Campos';
-import { buscarCliente, clienteVazio, excluirCliente, salvarCliente, type Campo, type ClienteDados } from '../../lib/db';
+import { avisar, confirmar } from '../../lib/alerta';
+import { clienteVazio, type Campo, type ClienteDados } from '../../lib/cliente';
+import { buscarCliente, excluirCliente, salvarCliente } from '../../lib/db';
 import { isValidCPF, isValidDate, isValidEmail, maskCEP, maskCPF, maskDate, maskPhone, onlyDigits } from '../../lib/masks';
 import { ESTADOS_CIVIS, GRUPOS, NACIONALIDADES, ORGAOS_EMISSORES, TIPOS, TRATAMENTOS, UFS } from '../../lib/options';
 import { cores } from '../../lib/theme';
+
+// Ao abrir um link direto no navegador não há tela anterior para voltar.
+const voltar = () => (router.canGoBack() ? router.back() : router.replace('/'));
 
 type Erros = Partial<Record<Campo, string>>;
 
@@ -34,7 +37,6 @@ function validar(d: ClienteDados): Erros {
 
 export default function CadastroCliente() {
   const { id } = useLocalSearchParams<{ id: string }>();
-  const db = useSQLiteContext();
   const insets = useSafeAreaInsets();
   const novo = id === 'novo';
   const idNum = novo ? undefined : Number(id);
@@ -48,7 +50,7 @@ export default function CadastroCliente() {
 
   useEffect(() => {
     if (!idNum) return;
-    buscarCliente(db, idNum).then((c) => {
+    buscarCliente(idNum).then((c) => {
       if (c) {
         const { id: _id, criado_em: _c, atualizado_em: _a, ...resto } = c;
         setDados({ ...clienteVazio(), ...resto });
@@ -56,7 +58,7 @@ export default function CadastroCliente() {
       }
       setCarregando(false);
     });
-  }, [db, idNum]);
+  }, [idNum]);
 
   const set = (campo: Campo) => (valor: string) => {
     setDados((d) => ({ ...d, [campo]: valor }));
@@ -94,15 +96,15 @@ export default function CadastroCliente() {
     const e = validar(dados);
     setErros(e);
     if (Object.keys(e).length > 0) {
-      Alert.alert('Verifique os campos', Object.values(e).join('\n'));
+      avisar('Verifique os campos', Object.values(e).join('\n'));
       return;
     }
     setSalvando(true);
     try {
-      await salvarCliente(db, dados, idNum);
-      router.back();
+      await salvarCliente(dados, idNum);
+      voltar();
     } catch (err) {
-      Alert.alert('Erro ao salvar', String(err));
+      avisar('Erro ao salvar', String(err));
     } finally {
       setSalvando(false);
     }
@@ -110,17 +112,10 @@ export default function CadastroCliente() {
 
   function confirmarExclusao() {
     if (!idNum) return;
-    Alert.alert('Excluir cadastro', `Deseja excluir “${dados.nome}”? Essa ação não pode ser desfeita.`, [
-      { text: 'Cancelar', style: 'cancel' },
-      {
-        text: 'Excluir',
-        style: 'destructive',
-        onPress: async () => {
-          await excluirCliente(db, idNum);
-          router.back();
-        },
-      },
-    ]);
+    confirmar('Excluir cadastro', `Deseja excluir “${dados.nome}”? Essa ação não pode ser desfeita.`, 'Excluir', async () => {
+      await excluirCliente(idNum);
+      voltar();
+    });
   }
 
   if (carregando) {
@@ -144,7 +139,7 @@ export default function CadastroCliente() {
         }}
       />
       <ScrollView
-        contentContainerStyle={{ padding: 14, paddingBottom: insets.bottom + 24 }}
+        contentContainerStyle={[styles.conteudo, { paddingBottom: insets.bottom + 24 }]}
         keyboardShouldPersistTaps="handled"
       >
         <Secao titulo="Identificação">
@@ -297,6 +292,8 @@ export default function CadastroCliente() {
 }
 
 const styles = StyleSheet.create({
+  // Em telas largas (navegador no computador) o formulário fica centralizado.
+  conteudo: { padding: 14, width: '100%', maxWidth: 760, alignSelf: 'center' },
   centro: { flex: 1, alignItems: 'center', justifyContent: 'center' },
   headerSalvar: { color: cores.destaque, fontWeight: '800', fontSize: 16 },
   botaoSalvar: {
