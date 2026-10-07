@@ -1,0 +1,12 @@
+# Site Pedropixel no Netlify: página inicial em /, app lawyer em /lawyer/, links em /links/.
+[build]
+  command = "bash scripts/build-site.sh dist-site"
+  publish = "dist-site"
+
+[build.environment]
+  NODE_VERSION = "22"
+
+[[headers]]
+  for = "/lawyer/_expo/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"

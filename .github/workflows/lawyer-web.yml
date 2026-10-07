@@ -3,7 +3,7 @@ name: Publicar lawyer (web)
 on:
   push:
     branches: [main, claude/lawyer-client-registration-app-4frzl1]
-    paths: ['lawyer/**', 'pedropixel/**', '.github/workflows/lawyer-web.yml']
+    paths: ['lawyer/**', 'pedropixel/**', 'site/**', 'scripts/build-site.sh', '.github/workflows/lawyer-web.yml']
   workflow_dispatch:
 
 permissions:
@@ -16,9 +16,6 @@ concurrency:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: lawyer
     steps:
       - uses: actions/checkout@v4
 
@@ -29,29 +26,22 @@ jobs:
           cache-dependency-path: lawyer/package-lock.json
 
       - run: npm ci
+        working-directory: lawyer
 
       - run: npx tsc --noEmit
+        working-directory: lawyer
 
+      # Mesmo site do Netlify (scripts/build-site.sh), aqui dentro de /apps:
+      # /apps/ (início), /apps/lawyer/ (app) e /apps/links/ (bio).
       - name: Gerar site
         env:
-          EXPO_WEB_BASE_URL: /apps
-        run: |
-          npx expo export --platform web --output-dir dist
-          # Ícone e manifesto para "Adicionar à Tela de Início" (iPhone e Android).
-          sed -i -e 's#<html lang="en">#<html lang="pt-BR">#' \
-            -e 's#</head>#<link rel="apple-touch-icon" sizes="120x120" href="/apps/icone-ios-120.png"/><link rel="apple-touch-icon" sizes="152x152" href="/apps/icone-ios-152.png"/><link rel="apple-touch-icon" sizes="167x167" href="/apps/icone-ios-167.png"/><link rel="apple-touch-icon" sizes="180x180" href="/apps/icone-ios-180.png"/><link rel="apple-touch-icon" href="/apps/icone-ios-180.png"/><link rel="manifest" href="/apps/manifest.json?v=3"/><meta name="apple-mobile-web-app-title" content="lawyer"/></head>#' \
-            dist/index.html
-          # GitHub Pages devolve 404.html para links diretos (ex.: /apps/cliente/3); o app resolve a rota.
-          cp dist/index.html dist/404.html
-          # Página de links da bio (Pedropixel): https://pedrututuant06-spec.github.io/apps/links/
-          cp -r ../pedropixel dist/links
-          # Sem isso o GitHub Pages ignora a pasta _expo.
-          touch dist/.nojekyll
+          SITE_PREFIX: /apps
+        run: bash scripts/build-site.sh dist-site
 
       - name: Publicar no branch gh-pages
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: lawyer/dist
+          publish_dir: dist-site
           publish_branch: gh-pages
           force_orphan: true

@@ -1,13 +1,13 @@
 {
   "name": "lawyer",
   "short_name": "lawyer",
-  "start_url": "/apps/",
-  "scope": "/apps/",
+  "start_url": "__BASE__/",
+  "scope": "__BASE__/",
   "display": "standalone",
   "background_color": "#F3F4F7",
   "theme_color": "#1F2A44",
   "icons": [
-    { "src": "/apps/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
-    { "src": "/apps/icone-ios-180.png", "sizes": "180x180", "type": "image/png" }
+    { "src": "__BASE__/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "__BASE__/icone-ios-180.png", "sizes": "180x180", "type": "image/png" }
   ]
 }

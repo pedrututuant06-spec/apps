@@ -28,12 +28,11 @@ Escaneie o QR code com o app **Expo Go** (iPhone: câmera; Android/Samsung: app 
 
 ## Versão web
 
-Endereço: **https://pedrututuant06-spec.github.io/apps/**
+O app faz parte do site Pedropixel, montado por `scripts/build-site.sh` (na raiz do repositório):
+- **Netlify** (endereço principal): `/lawyer/`. Configuração em `netlify.toml`.
+- **GitHub Pages** (cópia): https://pedrututuant06-spec.github.io/apps/lawyer/
 
-Cada push em `lawyer/` gera o site automaticamente (`.github/workflows/lawyer-web.yml`) e publica no branch
-`gh-pages`. Na primeira vez é preciso ativar em GitHub → Settings → Pages → Branch: `gh-pages` / `(root)` → Save.
-
-No navegador os cadastros ficam salvos **no próprio navegador** (localStorage): cada computador/navegador tem
+No navegador, os cadastros ficam salvos **no próprio navegador** (localStorage). Cada aparelho e cada endereço tem
 os seus dados, e limpar os dados do navegador apaga os cadastros.
 
 ## App Store e Play Store
