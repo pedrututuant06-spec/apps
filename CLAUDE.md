@@ -8,6 +8,7 @@
 - Conteúdo novo (app, jogo, mod) entra na página inicial `site/index.html` **e** na página de links.
 
 ## Links do Pedropixel
+- Canal do YouTube: **https://www.youtube.com/@PedroPixelStudio** (identificador `@PedroPixelStudio`).
 - A página de links da bio fica em `pedropixel/index.html`, publicada em **https://pedropixel-3589bd.netlify.app/links/** (link da bio) e na cópia
   https://pedrututuant06-spec.github.io/apps/links/.
 - Em textos novos use sempre os endereços do Netlify: app `https://pedropixel-3589bd.netlify.app/lawyer/`, bio `https://pedropixel-3589bd.netlify.app/links/`.
