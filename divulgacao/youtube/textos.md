@@ -1,6 +1,6 @@
 # YouTube — lawyer
 
-Link da bio (todos os links ficam aqui): **https://pedrututuant06-spec.github.io/apps/links/**
+Link da bio (todos os links ficam aqui): **https://sparkling-cheesecake-3589bd.netlify.app/links/**
 
 ---
 
@@ -22,8 +22,8 @@ O lawyer é um app gratuito para escritórios de advocacia cadastrarem clientes,
 ✅ Excluir pela lixeira ou vários de uma vez
 ✅ Sem login e sem anúncios — os dados ficam no seu aparelho
 
-👉 Use grátis no navegador: https://pedrututuant06-spec.github.io/apps/
-🔗 Todos os meus apps, jogos e mods de Minecraft: https://pedrututuant06-spec.github.io/apps/links/
+👉 Use grátis no navegador: https://sparkling-cheesecake-3589bd.netlify.app/lawyer/
+🔗 Todos os meus apps, jogos e mods de Minecraft: https://sparkling-cheesecake-3589bd.netlify.app/links/
 
 Música: trilha original criada para este vídeo (sem direitos autorais de terceiros).
 
@@ -37,8 +37,8 @@ app para advogados, advocacia, cadastro de clientes, app grátis, escritório de
 
 **Comentário fixado**
 ```
-📌 Use o lawyer grátis no navegador: https://pedrututuant06-spec.github.io/apps/
-🔗 Meus apps, jogos e mods de Minecraft: https://pedrututuant06-spec.github.io/apps/links/
+📌 Use o lawyer grátis no navegador: https://sparkling-cheesecake-3589bd.netlify.app/lawyer/
+🔗 Meus apps, jogos e mods de Minecraft: https://sparkling-cheesecake-3589bd.netlify.app/links/
 Deixe nos comentários o que você quer que eu adicione no app! 👇
 ```
 
@@ -55,16 +55,16 @@ App GRÁTIS para advogados cadastrarem clientes 📋⚖️ #shorts
 ```
 Cadastro completo de clientes, contrários e testemunhas — com CPF validado e endereço automático pelo CEP. Grátis, sem login e sem anúncios.
 
-👉 Link do app: https://pedrututuant06-spec.github.io/apps/
-🔗 Todos os links: https://pedrututuant06-spec.github.io/apps/links/
+👉 Link do app: https://sparkling-cheesecake-3589bd.netlify.app/lawyer/
+🔗 Todos os links: https://sparkling-cheesecake-3589bd.netlify.app/links/
 
 #shorts #advocacia #advogado #app
 ```
 
 **Comentário fixado**
 ```
-📌 App grátis: https://pedrututuant06-spec.github.io/apps/
-🔗 Todos os meus links: https://pedrututuant06-spec.github.io/apps/links/
+📌 App grátis: https://sparkling-cheesecake-3589bd.netlify.app/lawyer/
+🔗 Todos os meus links: https://sparkling-cheesecake-3589bd.netlify.app/links/
 ```
 
 ---

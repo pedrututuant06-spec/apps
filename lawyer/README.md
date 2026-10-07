@@ -29,7 +29,7 @@ Escaneie o QR code com o app **Expo Go** (iPhone: câmera; Android/Samsung: app 
 ## Versão web
 
 O app faz parte do site Pedropixel, montado por `scripts/build-site.sh` (na raiz do repositório):
-- **Netlify** (endereço principal): `/lawyer/`. Configuração em `netlify.toml`.
+- **Netlify** (endereço principal): https://sparkling-cheesecake-3589bd.netlify.app/lawyer/ — configuração em `netlify.toml`.
 - **GitHub Pages** (cópia): https://pedrututuant06-spec.github.io/apps/lawyer/
 
 No navegador, os cadastros ficam salvos **no próprio navegador** (localStorage). Cada aparelho e cada endereço tem

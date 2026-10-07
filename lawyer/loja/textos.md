@@ -32,8 +32,8 @@ advogado,advocacia,clientes,cadastro,escritório,jurídico,CPF,processo,testemun
 - Play Store: Empresas
 
 ## Links
-- Política de privacidade: https://pedrututuant06-spec.github.io/apps/privacidade.html
-- Site / suporte: https://pedrututuant06-spec.github.io/apps/
+- Política de privacidade: https://sparkling-cheesecake-3589bd.netlify.app/lawyer/privacidade.html
+- Site / suporte: https://sparkling-cheesecake-3589bd.netlify.app/
 
 ## Classificação etária
 Livre / 4+ (sem conteúdo sensível)
