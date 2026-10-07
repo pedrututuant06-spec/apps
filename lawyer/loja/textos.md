@@ -32,8 +32,8 @@ advogado,advocacia,clientes,cadastro,escritório,jurídico,CPF,processo,testemun
 - Play Store: Empresas
 
 ## Links
-- Política de privacidade: https://sparkling-cheesecake-3589bd.netlify.app/lawyer/privacidade.html
-- Site / suporte: https://sparkling-cheesecake-3589bd.netlify.app/
+- Política de privacidade: https://pedropixel-3589bd.netlify.app/lawyer/privacidade.html
+- Site / suporte: https://pedropixel-3589bd.netlify.app/
 
 ## Classificação etária
 Livre / 4+ (sem conteúdo sensível)

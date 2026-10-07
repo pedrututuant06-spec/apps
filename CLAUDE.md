@@ -1,16 +1,16 @@
 # Regras deste repositório
 
 ## Site Pedropixel
-- Endereço principal: **https://sparkling-cheesecake-3589bd.netlify.app/** (Netlify, publica sozinho a cada push neste branch).
+- Endereço principal: **https://pedropixel-3589bd.netlify.app/** (Netlify, publica sozinho a cada push neste branch).
 - O site é montado por `scripts/build-site.sh` e publicado no **Netlify** (`netlify.toml`): página inicial `site/` em `/`,
   app lawyer em `/lawyer/`, links da bio `pedropixel/` em `/links/`. O GitHub Pages recebe uma cópia igual em
   https://pedrututuant06-spec.github.io/apps/ (workflow `.github/workflows/lawyer-web.yml`).
 - Conteúdo novo (app, jogo, mod) entra na página inicial `site/index.html` **e** na página de links.
 
 ## Links do Pedropixel
-- A página de links da bio fica em `pedropixel/index.html`, publicada em **https://sparkling-cheesecake-3589bd.netlify.app/links/** (link da bio) e na cópia
+- A página de links da bio fica em `pedropixel/index.html`, publicada em **https://pedropixel-3589bd.netlify.app/links/** (link da bio) e na cópia
   https://pedrututuant06-spec.github.io/apps/links/.
-- Em textos novos use sempre os endereços do Netlify: app `https://sparkling-cheesecake-3589bd.netlify.app/lawyer/`, bio `https://sparkling-cheesecake-3589bd.netlify.app/links/`.
+- Em textos novos use sempre os endereços do Netlify: app `https://pedropixel-3589bd.netlify.app/lawyer/`, bio `https://pedropixel-3589bd.netlify.app/links/`.
 - **Sempre** que algo novo for criado (app, jogo, mod de Minecraft, vídeo etc.), adicione o link na seção certa dessa
   página (Canal, Apps, Jogos ou Mods de Minecraft). Isso vale para todo conteúdo do canal, menos posts da comunidade e
   imagens do canal.
