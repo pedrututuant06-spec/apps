@@ -16,11 +16,13 @@ printf "\n${O}${B}⚡ Acelerando o Jarvis${N} (Mac com ${RAM_GB} GB)\n"
 
 # 1) Variáveis do Ollama — aplicadas agora e a cada login -------------------------
 ENV_CMDS="launchctl setenv OLLAMA_FLASH_ATTENTION 1; launchctl setenv OLLAMA_KV_CACHE_TYPE q8_0; launchctl setenv OLLAMA_KEEP_ALIVE -1"
-if [ "$RAM_GB" -le 16 ]; then
-  # pouca memória: um modelo por vez na GPU evita trocas lentas para a CPU
-  ENV_CMDS="$ENV_CMDS; launchctl setenv OLLAMA_MAX_LOADED_MODELS 1"
+# Sem fila: o Ollama responde várias pessoas ao mesmo tempo (NUM_PARALLEL)
+if [ "$RAM_GB" -le 8 ]; then
+  ENV_CMDS="$ENV_CMDS; launchctl setenv OLLAMA_MAX_LOADED_MODELS 1; launchctl setenv OLLAMA_NUM_PARALLEL 2"
+elif [ "$RAM_GB" -le 16 ]; then
+  ENV_CMDS="$ENV_CMDS; launchctl setenv OLLAMA_MAX_LOADED_MODELS 1; launchctl setenv OLLAMA_NUM_PARALLEL 4"
 else
-  ENV_CMDS="$ENV_CMDS; launchctl setenv OLLAMA_MAX_LOADED_MODELS 2"
+  ENV_CMDS="$ENV_CMDS; launchctl setenv OLLAMA_MAX_LOADED_MODELS 2; launchctl setenv OLLAMA_NUM_PARALLEL 4"
 fi
 mkdir -p "$AGENTS"
 cat > "$AGENTS/com.jarvis.ollama-env.plist" <<EOF
@@ -35,7 +37,7 @@ EOF
 launchctl bootout "$U/com.jarvis.ollama-env" 2>/dev/null
 launchctl bootstrap "$U" "$AGENTS/com.jarvis.ollama-env.plist" 2>/dev/null
 /bin/sh -c "$ENV_CMDS"
-ok "Ollama: Flash Attention, cache comprimido e modelo sempre carregado"
+ok "Ollama: Flash Attention, cache comprimido, modelo sempre carregado e várias respostas ao mesmo tempo"
 
 # 2) Mais memória para a GPU (pede a senha do Mac) ---------------------------------
 if [ "$RAM_GB" -ge 16 ]; then

@@ -59,7 +59,7 @@ ok "Chip: $CHIP · Memória RAM: ${B}${RAM_GB} GB${N} · macOS $MACOS"
 tier_small()  { M_JARVIS="gemma3:4b";  M_TURBO="gemma3:1b"; M_CODE="qwen2.5-coder:3b";  MODELS_GB=6;  NUM_CTX=4096; }
 tier_medium() { M_JARVIS="gemma3:12b"; M_TURBO="gemma3:4b"; M_CODE="qwen2.5-coder:7b";  MODELS_GB=17; NUM_CTX=4096; }
 tier_large()  { M_JARVIS="gemma3:12b"; M_TURBO="gemma3:4b"; M_CODE="qwen2.5-coder:14b"; MODELS_GB=21; NUM_CTX=8192; }
-CONCURRENT=1
+CONCURRENT=0   # 0 = sem fila: todos respondidos ao mesmo tempo
 if [ "$RAM_GB" -le 8 ]; then
   tier_small;  WHY="8 GB de RAM: modelos leves que não travam o Mac."
 elif [ "$RAM_GB" -le 18 ]; then
@@ -178,7 +178,7 @@ except Exception:
 cfg.pop("model", None)
 cfg.update({"models": {"jarvis": mj, "turbo": mt, "code": mc}, "num_ctx": int(ctx),
             "num_ctx_code": max(8192, int(ctx)), "max_concurrent": int(conc), "tunnel_log": tlog})
-cfg.setdefault("max_users", 4)
+cfg["max_users"] = 0   # sem limite de pessoas, sem fila
 cfg.setdefault("port", 8080)
 cfg.setdefault("external_port", 8081)
 cfg.setdefault("lan", True)

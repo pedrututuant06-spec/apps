@@ -160,8 +160,8 @@ def load_config():
         "port": 8080,
         "external_port": 8081,
         "lan": True,
-        "max_users": 4,
-        "max_concurrent": 1,
+        "max_users": 0,          # 0 = sem limite de pessoas (sem sala de espera)
+        "max_concurrent": 0,     # 0 = sem fila: todos são respondidos ao mesmo tempo
         "num_ctx": 4096,
         "keep_alive": -1,               # modelo sempre carregado = resposta imediata
         "history_messages": 60,
@@ -278,6 +278,10 @@ class Seats:
         now = time.time()
         with self.lock:
             self._purge(now)
+            if limit <= 0:          # sem limite: entra direto
+                self.seated[key] = {"last": now, "name": name}
+                self.waiting = [w for w in self.waiting if w["key"] != key]
+                return {"seated": True}
             if key in self.seated:
                 self.seated[key] = {"last": now, "name": name}
                 return {"seated": True}
@@ -332,6 +336,11 @@ class GenQueue:
     def try_start(self, t, limit):
         """Retorna None se começou, ou (posição, [nomes sendo atendidos])."""
         with self.cond:
+            if limit <= 0:          # sem fila
+                if t in self.waiting:
+                    self.waiting.remove(t)
+                    self.running.append(t)
+                return None
             free = max(0, limit - len(self.running))
             idx = self.waiting.index(t)
             if idx < free:
@@ -834,7 +843,7 @@ class Handler(BaseHTTPRequestHandler):
                 if body.get("models"):
                     threading.Thread(target=warmup, daemon=True).start()
                 if "max_users" in body:
-                    CFG["max_users"] = max(1, min(10, int(body["max_users"])))
+                    CFG["max_users"] = max(0, min(50, int(body["max_users"])))
                 save_config()
             return self.send_json(200, {"ok": True})
 

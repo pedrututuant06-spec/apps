@@ -261,7 +261,7 @@ function updatePresence(r) {
   const others = (r.busy_with || []).filter((n) => n !== state.me?.name);
   let html;
   if (others.length && !state.busy) html = `<span class="dot busy"></span>respondendo ${esc(nameList(others))}`;
-  else html = `<span class="dot"></span>${(r.online || []).length || 1} de ${r.max_users} online`;
+  else html = `<span class="dot"></span>${(r.online || []).length || 1}${r.max_users > 0 ? " de " + r.max_users : ""} online`;
   $("#presence").innerHTML = html;
 }
 
@@ -601,7 +601,8 @@ async function openSettings() {
           <select class="st-model" data-engine="${k}">${opts.map((m) => `<option ${m === cur ? "selected" : ""}>${esc(m)}</option>`).join("")}</select>`;
       }).join("")}
       <label>Máximo de pessoas conectadas ao mesmo tempo</label>
-      <input id="st-max" type="number" min="1" max="10" value="${s.max_users}">
+      <input id="st-max" type="number" min="0" max="50" value="${s.max_users}">
+      <p class="muted" style="font-size:.85rem">0 = sem limite e sem fila (todos são atendidos ao mesmo tempo).</p>
       <div class="row" style="margin-top:12px"><button class="btn primary" id="st-engine">Salvar</button></div>
     </section>
     <section>

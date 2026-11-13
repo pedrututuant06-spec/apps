@@ -15,7 +15,7 @@ O instalador detecta sozinho a memória RAM do Mac e escolhe os modelos que não
 - **App Jarvis** no Mac, com o seu ícone, no Dock e no Launchpad.
 - Duas áreas: **💬 Conversas** (com o seletor Jarvis 1.0 / Turbo 1.0) e **`</>` Jarvis Code**, com botão de copiar código.
 - **4 perfis com senha**: no primeiro acesso cada pessoa cria a sua senha, e as conversas de um não aparecem para os outros. O perfil marcado como "criança/jovem" faz o Jarvis usar linguagem simples e conteúdo adequado à idade.
-- **Fila**: no máximo 4 pessoas conectadas. A 5ª vê "Espere um momento… você é o 1º da fila" e entra sozinha quando uma vaga abre. Quando o Jarvis está respondendo outra pessoa, aparece: "o Jarvis está respondendo a Ana. Você é o 1º da fila".
+- **Sem fila**: todo mundo é atendido ao mesmo tempo, sem limite de pessoas. Se quiser voltar a ter limite e fila, mude "Máximo de pessoas" em ⚙️ (0 = sem limite).
 - **Wi-Fi de casa**: celulares e tablets acessam `http://NOME-DO-MAC.local:8080` (e podem "Adicionar à Tela de Início").
 - **Link para usar fora de casa** (opcional): um endereço `https://….trycloudflare.com`, protegido pelo código da família.
 - **API para o projeto Jarvis**, compatível com OpenAI, para usar a IA local no lugar do Gemini ou do Claude.
