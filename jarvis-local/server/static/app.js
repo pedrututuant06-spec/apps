@@ -373,7 +373,7 @@ function addActions(bubble, text, engine) {
   const a = document.createElement("div");
   a.className = "msg-actions";
   a.innerHTML = '<button>📋 Copiar</button>' + (engine && ENGINE_LABEL[engine.engine]
-    ? `<span class="engine">${esc(ENGINE_LABEL[engine.engine])}</span>` : "");
+    ? `<span class="engine">${esc(ENGINE_LABEL[engine.engine])}${engine.speed ? ` · ${engine.speed} palavras/s` : ""}</span>` : "");
   a.firstChild.onclick = () => copy(text);
   bubble.appendChild(a);
 }
@@ -468,6 +468,9 @@ async function send(text) {
         } else if (ev === "token") {
           answer += d.t;
           if (!frame) frame = requestAnimationFrame(paint);
+        } else if (ev === "done") {
+          const st = d.stats || {};
+          if (engine && st.eval_count && st.eval_duration) engine.speed = Math.round(st.eval_count / (st.eval_duration / 1e9));
         } else if (ev === "error") {
           failed = d.error;
         }

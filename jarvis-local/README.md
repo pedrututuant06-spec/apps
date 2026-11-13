@@ -43,6 +43,7 @@ jarvis codigo        código da família
 jarvis api           dados para conectar o projeto Jarvis
 jarvis reiniciar     reinicia o servidor
 jarvis modelo        mostra os modelos; ex.: jarvis modelo turbo gemma3:4b
+jarvis acelerar      deixa o Jarvis o mais rápido possível
 jarvis limpar        libera espaço no Mac
 jarvis desinstalar   remove tudo
 ```

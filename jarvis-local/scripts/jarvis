@@ -87,6 +87,9 @@ c = json.load(open(sys.argv[1])); c.setdefault("models", {})[sys.argv[2]] = sys.
 json.dump(c, open(sys.argv[1], "w"), indent=2, ensure_ascii=False)' "$CFG" "$2" "$3"
     launchctl kickstart -k "$U/com.jarvis.server"; echo "Agora o modo $2 usa: $3" ;;
 
+  acelerar|turbinar)
+    bash "$BIN_DIR/acelerar.sh" ;;
+
   limpar|liberar-espaco)
     bash "$BIN_DIR/liberar-espaco.sh" ;;
 
@@ -107,6 +110,7 @@ ${B}jarvis${N} — comandos do Jarvis Local
   jarvis modelo           mostra os modelos (jarvis, turbo, code)
   jarvis modelo turbo X   troca o modelo de um modo
   jarvis logs             mostra o registro do servidor
+  jarvis acelerar         deixa o Jarvis o mais rápido possível
   jarvis limpar           assistente para liberar espaço no Mac
   jarvis desinstalar      remove o Jarvis
 EOF

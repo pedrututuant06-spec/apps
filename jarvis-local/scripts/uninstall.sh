@@ -7,7 +7,9 @@ ask() { printf "  %s [s/N] " "$1"; read -r a </dev/tty; a="$(printf '%s' "$a" | 
 ask "Remover o Jarvis deste Mac?" || exit 0
 launchctl bootout "$U/com.jarvis.server" 2>/dev/null
 launchctl bootout "$U/com.jarvis.tunnel" 2>/dev/null
-rm -f "$HOME/Library/LaunchAgents/com.jarvis.server.plist" "$HOME/Library/LaunchAgents/com.jarvis.tunnel.plist"
+launchctl bootout "$U/com.jarvis.ollama-env" 2>/dev/null
+rm -f "$HOME/Library/LaunchAgents/com.jarvis.server.plist" "$HOME/Library/LaunchAgents/com.jarvis.tunnel.plist" "$HOME/Library/LaunchAgents/com.jarvis.ollama-env.plist"
+[ -f /Library/LaunchDaemons/com.jarvis.gpumem.plist ] && sudo rm -f /Library/LaunchDaemons/com.jarvis.gpumem.plist
 rm -rf /Applications/Jarvis.app "$HOME/Applications/Jarvis.app"
 [ -L /usr/local/bin/jarvis ] && rm -f /usr/local/bin/jarvis
 rm -rf "$APP_SUPPORT/app" "$APP_SUPPORT/bin" "$HOME/Library/Logs/Jarvis"

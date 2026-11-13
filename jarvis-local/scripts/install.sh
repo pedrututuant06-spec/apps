@@ -165,7 +165,7 @@ mkdir -p "$INSTALL_DIR" "$BIN_DIR" "$LOG_DIR" "$AGENTS"
 rm -rf "$INSTALL_DIR/server"
 cp -R "$SRC/server" "$INSTALL_DIR/server"
 cp "$SRC/scripts/jarvis" "$BIN_DIR/jarvis"
-cp "$SRC/scripts/liberar-espaco.sh" "$SRC/scripts/uninstall.sh" "$BIN_DIR/"
+cp "$SRC/scripts/liberar-espaco.sh" "$SRC/scripts/uninstall.sh" "$SRC/scripts/acelerar.sh" "$BIN_DIR/"
 chmod +x "$BIN_DIR/"*
 
 "$PY" - "$APP_SUPPORT/config.json" "$M_JARVIS" "$M_TURBO" "$M_CODE" "$NUM_CTX" "$CONCURRENT" "$LOG_DIR/tunnel.log" <<'PYEOF'
@@ -305,6 +305,11 @@ if ! defaults read com.apple.dock persistent-apps 2>/dev/null | grep -q "Jarvis.
     "<dict><key>tile-data</key><dict><key>file-data</key><dict><key>_CFURLString</key><string>file://$APP/</string><key>_CFURLStringType</key><integer>15</integer></dict></dict></dict>"
   killall Dock 2>/dev/null || true
   ok "Ícone do Jarvis adicionado ao Dock"
+fi
+
+# otimizações de velocidade (Flash Attention, cache comprimido, mais memória para a GPU)
+if ask "Aplicar as otimizações de velocidade do Jarvis? (pode pedir sua senha)" s; then
+  bash "$SRC/scripts/acelerar.sh"
 fi
 
 # comando "jarvis" no Terminal

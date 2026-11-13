@@ -163,8 +163,8 @@ def load_config():
         "max_users": 4,
         "max_concurrent": 1,
         "num_ctx": 4096,
-        "keep_alive": "24h",
-        "history_messages": 24,
+        "keep_alive": -1,               # modelo sempre carregado = resposta imediata
+        "history_messages": 60,
         "ollama_url": "http://127.0.0.1:11434",
         "tunnel_log": str(Path.home() / "Library" / "Logs" / "Jarvis" / "tunnel.log"),
     }
@@ -455,7 +455,7 @@ def engine_stream(engine, messages, options=None):
         yield piece
 
 
-def warmup(engines=("jarvis", "turbo")):
+def warmup(engines=("jarvis",)):
     """Carrega os modelos na memória para a primeira resposta ser rápida."""
     for _ in range(30):
         ok, _models = ollama_ok()
@@ -651,7 +651,7 @@ class Handler(BaseHTTPRequestHandler):
             pass
         except (BrokenPipeError, ConnectionResetError):
             pass
-        except Exception as e:  # noqa
+        except Exception as e:
             print(f"[jarvis] erro em {method} {path}: {e!r}", flush=True)
             try:
                 self.send_json(500, {"error": "Erro interno: " + str(e)})
