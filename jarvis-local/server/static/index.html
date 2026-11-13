@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Jarvis</title>
+<meta name="theme-color" content="#0b0b0d">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Jarvis">
+<link rel="icon" href="/favicon.png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/style.css">
+</head>
+<body>
+
+<!-- Código da família (acesso fora do Mac) -->
+<section id="screen-code" class="screen center hidden">
+  <div class="card narrow">
+    <img src="/icon-192.png" class="logo" alt="">
+    <h1>Bem-vindo ao Jarvis</h1>
+    <p class="muted">Digite o código da família para entrar neste aparelho.</p>
+    <form id="code-form">
+      <input id="code-input" autocomplete="off" autocapitalize="characters" placeholder="ABCD-1234" maxlength="12">
+      <button class="btn primary" type="submit">Entrar</button>
+    </form>
+    <p id="code-error" class="error"></p>
+  </div>
+</section>
+
+<!-- Escolha de perfil -->
+<section id="screen-profiles" class="screen center hidden">
+  <div class="wide">
+    <img src="/icon-192.png" class="logo" alt="">
+    <h1>Quem vai falar com o Jarvis?</h1>
+    <div id="profile-grid" class="profile-grid"></div>
+  </div>
+</section>
+
+<!-- PIN -->
+<div id="pin-modal" class="modal hidden">
+  <div class="card narrow">
+    <div id="pin-avatar" class="avatar big"></div>
+    <h2 id="pin-title">Senha</h2>
+    <p id="pin-hint" class="muted"></p>
+    <form id="pin-form">
+      <input id="pin-input" type="password" maxlength="32" placeholder="Senha" autocomplete="off">
+      <input id="pin-confirm" type="password" maxlength="32" placeholder="Repita a senha" autocomplete="off" class="hidden">
+      <div class="row">
+        <button type="button" class="btn" id="pin-cancel">Voltar</button>
+        <button type="submit" class="btn primary">Entrar</button>
+      </div>
+    </form>
+    <p id="pin-error" class="error"></p>
+  </div>
+</div>
+
+<!-- Sala de espera -->
+<section id="screen-wait" class="screen center hidden">
+  <div class="card narrow">
+    <div class="pulse"><img src="/icon-192.png" alt=""></div>
+    <h2>Espere um momento…</h2>
+    <p id="wait-text" class="muted"></p>
+    <button class="btn" id="wait-leave">Trocar de perfil</button>
+  </div>
+</section>
+
+<!-- Chat -->
+<section id="screen-chat" class="screen hidden">
+  <aside id="sidebar">
+    <div class="side-top">
+      <button class="btn primary block" id="new-chat">＋ Nova conversa</button>
+    </div>
+    <div id="conv-list"></div>
+    <div class="side-bottom">
+      <button class="me" id="me-btn" title="Trocar de perfil">
+        <span id="me-avatar" class="avatar"></span>
+        <span><b id="me-name"></b><small>Trocar de perfil</small></span>
+      </button>
+      <button class="icon-btn" id="settings-btn" title="Configurações">⚙️</button>
+    </div>
+  </aside>
+  <div id="backdrop" class="hidden"></div>
+  <main>
+    <header>
+      <button class="icon-btn" id="menu-btn" title="Conversas">☰</button>
+      <div class="brand"><img src="/favicon.png" alt=""> <span>Jarvis</span></div>
+      <nav class="tabs" id="tabs">
+        <button data-section="chat" class="active">💬 Conversas</button>
+        <button data-section="code">&lt;/&gt; Jarvis Code</button>
+      </nav>
+      <div id="presence" class="presence"></div>
+    </header>
+    <div id="messages">
+      <div id="empty" class="empty">
+        <img src="/icon-192.png" alt="">
+        <h2 id="hello"></h2>
+        <p class="muted" id="hello-sub"></p>
+        <div class="suggestions" id="suggestions"></div>
+      </div>
+    </div>
+    <div id="queue-banner" class="queue hidden"></div>
+    <div class="engine-pick" id="engine-pick">
+      <button type="button" data-engine="jarvis" class="active" title="Mais inteligente, um pouco mais devagar">🧠 Jarvis 1.0</button>
+      <button type="button" data-engine="turbo" title="Muito rápido, ideal para coisas simples">⚡ Jarvis Turbo 1.0</button>
+    </div>
+    <form id="composer">
+      <textarea id="input" rows="1" placeholder="Escreva sua mensagem…" enterkeyhint="send"></textarea>
+      <button type="submit" class="send" id="send-btn" title="Enviar">➤</button>
+      <button type="button" class="send stop hidden" id="stop-btn" title="Parar">■</button>
+    </form>
+    <p class="footnote">O Jarvis pode errar. Confira informações importantes.</p>
+  </main>
+</section>
+
+<!-- Configurações -->
+<div id="settings-modal" class="modal hidden">
+  <div class="card settings">
+    <div class="settings-head">
+      <h2>Configurações</h2>
+      <button class="icon-btn" id="settings-close">✕</button>
+    </div>
+    <div id="settings-body"></div>
+  </div>
+</div>
+
+<div id="toast" class="toast hidden"></div>
+<script src="/app.js"></script>
+</body>
+</html>

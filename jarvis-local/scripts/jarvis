@@ -1,0 +1,114 @@
+#!/bin/bash
+# Comando "jarvis" — controle do Jarvis Local pelo Terminal.
+APP_SUPPORT="$HOME/Library/Application Support/Jarvis"
+BIN_DIR="$APP_SUPPORT/bin"
+LOG_DIR="$HOME/Library/Logs/Jarvis"
+AGENTS="$HOME/Library/LaunchAgents"
+U="gui/$(id -u)"
+CFG="$APP_SUPPORT/config.json"
+O=$'\033[38;5;208m'; G=$'\033[32m'; R=$'\033[31m'; B=$'\033[1m'; N=$'\033[0m'
+
+cfg() { /usr/bin/python3 -c "import json; print(json.load(open('$CFG')).get('$1',''))" 2>/dev/null; }
+link() { grep -aoE 'https://[a-z0-9-]+\.trycloudflare\.com' "$LOG_DIR/tunnel.log" 2>/dev/null | tail -1; }
+up() { launchctl print "$U/$1" >/dev/null 2>&1; }
+
+case "${1:-ajuda}" in
+  abrir|open)
+    open -a Jarvis 2>/dev/null || open http://localhost:8080 ;;
+
+  status)
+    printf "${B}Jarvis Local${N}\n"
+    curl -fs http://127.0.0.1:11434/api/tags >/dev/null && echo "  ${G}●${N} Ollama (motor de IA): ligado" || echo "  ${R}●${N} Ollama: DESLIGADO  → abra o app Ollama"
+    curl -fs http://localhost:8080/api/health >/dev/null && echo "  ${G}●${N} Servidor do Jarvis: ligado (http://localhost:8080)" || echo "  ${R}●${N} Servidor do Jarvis: DESLIGADO  → jarvis reiniciar"
+    if up com.jarvis.tunnel; then echo "  ${G}●${N} Link externo: ${B}$(link)${N}"; else echo "  ○ Link externo: desativado (jarvis link ligar)"; fi
+    echo "  Modelos: $(cfg models) · Máx. pessoas: $(cfg max_users)"
+    echo "  Código da família: ${O}${B}$(cfg family_code)${N}" ;;
+
+  link)
+    case "${2:-}" in
+      ligar)
+        [ -f "$AGENTS/com.jarvis.tunnel.plist" ] || { echo "Rode o instalador de novo e responda 'sim' para o link externo."; exit 1; }
+        launchctl bootout "$U/com.jarvis.tunnel" 2>/dev/null; sleep 1
+        rm -f "$LOG_DIR/tunnel.log"
+        launchctl bootstrap "$U" "$AGENTS/com.jarvis.tunnel.plist"
+        printf "Gerando link"; for _ in $(seq 1 30); do [ -n "$(link)" ] && break; printf "."; sleep 1; done; echo
+        echo "Link externo: ${B}$(link)${N}" ;;
+      desligar)
+        launchctl bootout "$U/com.jarvis.tunnel" 2>/dev/null; echo "Link externo desligado." ;;
+      *)
+        if up com.jarvis.tunnel && [ -n "$(link)" ]; then
+          echo "Link para usar fora de casa: ${B}$(link)${N}"
+          echo "Código da família: ${O}${B}$(cfg family_code)${N}"
+          printf '%s' "$(link)" | pbcopy && echo "(link copiado)"
+        else
+          echo "Link externo desligado. Para ligar: jarvis link ligar"
+        fi ;;
+    esac ;;
+
+  codigo|código)
+    echo "Código da família: ${O}${B}$(cfg family_code)${N}" ;;
+
+  api)
+    echo "Integração com o projeto Jarvis (API compatível com OpenAI):"
+    echo "  URL base:  http://localhost:8080/v1"
+    [ -n "$(link)" ] && echo "  URL externa: $(link)/v1"
+    echo "  Chave:     $(cfg api_key)"
+    echo "  Modelos:   jarvis · jarvis-turbo · jarvis-code" ;;
+
+  iniciar|start)
+    open -g -a Ollama 2>/dev/null
+    launchctl bootstrap "$U" "$AGENTS/com.jarvis.server.plist" 2>/dev/null || launchctl kickstart "$U/com.jarvis.server"
+    [ -f "$AGENTS/com.jarvis.tunnel.plist" ] && launchctl bootstrap "$U" "$AGENTS/com.jarvis.tunnel.plist" 2>/dev/null
+    echo "Jarvis iniciado." ;;
+
+  parar|stop)
+    launchctl bootout "$U/com.jarvis.server" 2>/dev/null
+    launchctl bootout "$U/com.jarvis.tunnel" 2>/dev/null
+    echo "Jarvis parado (o Ollama continua aberto). Para voltar: jarvis iniciar" ;;
+
+  reiniciar|restart)
+    open -g -a Ollama 2>/dev/null
+    launchctl kickstart -k "$U/com.jarvis.server" 2>/dev/null || launchctl bootstrap "$U" "$AGENTS/com.jarvis.server.plist"
+    echo "Jarvis reiniciado." ;;
+
+  logs)
+    tail -n 60 -f "$LOG_DIR/server.log" ;;
+
+  modelo)
+    # jarvis modelo [jarvis|turbo|code] [nome-do-modelo]
+    if [ -z "${3:-}" ]; then
+      echo "Modelos atuais: $(cfg models)"
+      echo "Para trocar: jarvis modelo jarvis gemma3:12b   (ou turbo / code)"; exit 0
+    fi
+    OLL="$(command -v ollama || echo /Applications/Ollama.app/Contents/Resources/ollama)"
+    "$OLL" pull "$3" || exit 1
+    /usr/bin/python3 -c 'import json, sys
+c = json.load(open(sys.argv[1])); c.setdefault("models", {})[sys.argv[2]] = sys.argv[3]
+json.dump(c, open(sys.argv[1], "w"), indent=2, ensure_ascii=False)' "$CFG" "$2" "$3"
+    launchctl kickstart -k "$U/com.jarvis.server"; echo "Agora o modo $2 usa: $3" ;;
+
+  limpar|liberar-espaco)
+    bash "$BIN_DIR/liberar-espaco.sh" ;;
+
+  desinstalar|uninstall)
+    bash "$BIN_DIR/uninstall.sh" ;;
+
+  *)
+    cat <<EOF
+${B}jarvis${N} — comandos do Jarvis Local
+  jarvis abrir            abre o app
+  jarvis status           mostra se está tudo funcionando
+  jarvis link             mostra (e copia) o link para usar fora de casa
+  jarvis link ligar       liga o link externo  ·  jarvis link desligar
+  jarvis codigo           mostra o código da família
+  jarvis api              dados para conectar o projeto Jarvis
+  jarvis reiniciar        reinicia o servidor
+  jarvis parar / iniciar  desliga / liga o Jarvis
+  jarvis modelo           mostra os modelos (jarvis, turbo, code)
+  jarvis modelo turbo X   troca o modelo de um modo
+  jarvis logs             mostra o registro do servidor
+  jarvis limpar           assistente para liberar espaço no Mac
+  jarvis desinstalar      remove o Jarvis
+EOF
+    ;;
+esac
